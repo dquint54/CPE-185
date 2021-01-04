@@ -1,0 +1,76 @@
+;*****************
+;*	         *
+;*   MASM Hello  *
+;*	         *
+;*****************
+
+cseg segment 'code'
+assume cs:cseg, ds:cseg, ss:cseg, es:cseg
+
+org 100h
+ 
+start:
+	   mov ah, 01
+	   int 21h
+	   mov bh, al; BX = 3100h , AX = 0131h
+	   mov ah, 01
+	   int 21h
+	   mov bl, al ; BX = 3132h
+	   
+	   sub bx, 3030h
+
+	   mov ax, 0000h
+	   mov al, bh
+	   mov cl, 0ah
+	   mul cl
+	   add al, bl 
+		
+
+	   
+	   mov cx,ax
+	   mov ah,9
+
+	   mov dx, offset Prompt
+	   int 21h
+	   
+ 
+again:	   
+	   mov dx, offset Hello
+	   int 21h
+	   mov dx, offset Tens_msg
+	   int 21h
+	   mov dx, offset Num_msg
+	   int 21h
+	   inc byte ptr Num_msg
+	   mov bl, byte ptr Num_msg
+	   cmp bl, 3AH
+	   jge IncTen
+
+back :	   loopne again
+ 
+ 
+done: 
+       mov ah, 4ch
+       int 21h
+	   
+IncTen: mov dl, 30h
+        mov byte ptr Num_msg, dl
+	inc byte ptr Tens_msg
+	jmp back
+		
+        org 200h
+ 
+ 
+Prompt db 13, 10,"x86 Lab 1 Part 3,Author : David Quintanilla",13 , 10,  "$"
+ 
+Hello db "Hello World", 20h, 20h, "$"
+
+Num_msg db 30h,13,10, 36
+
+Tens_msg db 30h, 36
+
+
+cseg ends
+
+end start
+
